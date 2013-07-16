@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <id>co.lanica.calcswigapptest</id>
-    <name>CalcSwigAppTest</name>
+    <id>co.lanica.chipmunkswigapptest</id>
+    <name>ChipmunkSwigAppTest</name>
     <version>1.0</version>
     <publisher>ewing</publisher>
     <url>http://</url>

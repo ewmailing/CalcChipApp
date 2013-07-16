@@ -143,8 +143,136 @@ function runTitaniumBenchmarks()
 
 }
 
+function ChipmunkHelloWorld()
+{
+  // cpVect is a 2D vector and cpv() is a shortcut for initializing them.
+  var gravity = example.cpv(0, -100);
+  
+  // Create an empty space.
+  var space = example.cpSpaceNew();
+  example.cpSpaceSetGravity(space, gravity);
+  
+  // Add a static line segment shape for the ground.
+  // We'll make it slightly tilted so the ball will roll off.
+  // We attach it to space->staticBody to tell Chipmunk it shouldn't be movable.
+  var ground = example.cpSegmentShapeNew(space.staticBody, example.cpv(-20, 5), example.cpv(20, -5), 0);
+  example.cpShapeSetFriction(ground, 1);
+  example.cpSpaceAddShape(space, ground);
+  
+  // Now let's make a ball that falls onto the line and rolls off.
+  // First we need to make a cpBody to hold the physical properties of the object.
+  // These include the mass, position, velocity, angle, etc. of the object.
+  // Then we attach collision shapes to the cpBody to give it a size and shape.
+  
+  var radius = 5;
+  var mass = 1;
+  
+  // The moment of inertia is like mass for rotation
+  // Use the cpMomentFor*() functions to help you approximate it.
+  var moment = example.cpMomentForCircle(mass, 0, radius, example.cpvzero);
+  
+  // The cpSpaceAdd*() functions return the thing that you are adding.
+  // It's convenient to create and add an object in one line.
+  var ballBody = example.cpSpaceAddBody(space, example.cpBodyNew(mass, moment));
+  example.cpBodySetPos(ballBody, example.cpv(0, 15));
+  
+  // Now we create the collision shape for the ball.
+  // You can create multiple collision shapes that point to the same body.
+  // They will all be attached to the body and move around to follow it.
+  var ballShape = example.cpSpaceAddShape(space, example.cpCircleShapeNew(ballBody, radius, example.cpvzero));
+  example.cpShapeSetFriction(ballShape, 0.7);
+  
+  // Now that it's all set up, we simulate all the objects in the space by
+  // stepping forward through time in small increments called steps.
+  // It is *highly* recommended to use a fixed size time step.
+  var timeStep = 1.0/60.0;
+  for(var time = 0; time < 2; time += timeStep){
+    var pos = example.cpBodyGetPos(ballBody);
+    var vel = example.cpBodyGetVel(ballBody);
+    Ti.API.info(
+      "Time is " 
+      + time 
+      + ". ballBody is at (" 
+      + pos.x 
+      + ", " 
+      + pos.y 
+      + "). It's velocity is (" 
+      + vel.x 
+      + ", " 
+      + vel.y 
+      + ")\n"
+    );
+    
+    example.cpSpaceStep(space, timeStep);
+  }
+
+  // Clean up our objects and exit!
+  /*
+  cpShapeFree(ballShape);
+  cpBodyFree(ballBody);
+  cpShapeFree(ground);
+  cpSpaceFree(space);
+  */
+}
+
+function runExperiments()
+{
+	
+	
+	var sometext = calcexample.example();
+	Ti.API.info("module example is => " + sometext);
+
+	calcexample.emptyCall();
+	Ti.API.info("calcexample emptyCall is => " );
+
+	var themod = example.my_mod(10, 4);
+	Ti.API.info("module my_mod is => " + themod);
 
 
+	var struct1 = example.MyStructMake(0, 0, 0);
+/*
+	example.MyStruct_x_set(struct1, 1);
+	example.MyStruct_y_set(struct1, 2);
+	example.MyStruct_z_set(struct1, 3);
+	*/
+	struct1.x = 1;
+	struct1.y = 2;
+	struct1.z = 3;
+	
+//	var struct2 = example.new_MyStruct();
+	var struct2 = example.MyStructMake(0, 0, 0);
+/*
+	example.MyStruct_x_set(struct2, 10);
+	example.MyStruct_y_set(struct2, 200);
+	example.MyStruct_z_set(struct2, 3000);
+*/
+	struct2.x = 10;
+	struct2.y = 200;
+	struct2.z = 3000;
+	
+	var ret_struct = example.AddStructs(struct1, struct2);
+/*
+	var ret_x = example.MyStruct_x_get(ret_struct);
+	var ret_y = example.MyStruct_y_get(ret_struct);
+	var ret_z = example.MyStruct_z_get(ret_struct);
+*/
+	var ret_x = ret_struct.x;
+	var ret_y = ret_struct.y;
+	var ret_z = ret_struct.z;
+	
+	Ti.API.info("ret_struct is => " + ret_x + ", " + ret_y + ", " + ret_z);
+
+	struct1 = null;
+	struct2 = null;
+	ret_struct = null;
+
+	var my_data = example.CreateData();
+	my_data = null;
+
+	ChipmunkHelloWorld();
+	Ti.API.info("Finished ChipmunkHelloWorld() " );
+	
+}
 
 
 // This is a single context application with multiple windows in a stack
@@ -201,15 +329,15 @@ function runTitaniumBenchmarks()
 	);
 	the_window.add(btn3);
 
-/*
-	var btn3 = Ti.UI.createButton({width:200,height:60,left:10,top:650,title:'Run Titanium'});
-	btn3.addEventListener('click',function()
+
+	var btn4 = Ti.UI.createButton({width:200,height:60,left:10,top:350,title:'Run Experiments'});
+	btn4.addEventListener('click',function()
 		{
-			runTitaniumBenchmarks();
+			runExperiments();
 		}
 	);
-	the_window.add(btn3);
-*/
+	the_window.add(btn4);
+
 
 
 
